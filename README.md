@@ -34,5 +34,4 @@
 </pre>
 
 **Start:**
-
-`$ make today` _or_ `$ make tomorrow` to code generate a day's command
+`$ make today` _or_ `$ make tomorrow`
