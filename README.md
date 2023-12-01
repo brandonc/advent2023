@@ -1,5 +1,8 @@
 ## Advent of Code 2023
 
+**Code:**
+`$ make today` _or_ `$ make tomorrow`
+
 **Build:**
 `make`
 
@@ -32,6 +35,3 @@
                          ":-------:"
                       hjw  \_____/
 </pre>
-
-**Start:**
-`$ make today` _or_ `$ make tomorrow`
