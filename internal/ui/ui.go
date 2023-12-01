@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/brandonc/advent2023/internal/maths"
 	"github.com/mitchellh/colorstring"
 )
 
@@ -35,36 +36,26 @@ func Debugf(message string, a ...any) {
 	Debug(fmt.Sprintf(message, a...))
 }
 
-func maxLength(a, b string) int {
-	if len(a) > len(b) {
-		return len(a)
-	}
-	return len(b)
-}
-
-func leftAlign(v, other string) string {
+func rightAlign(v, other string) string {
 	if len(v) > len(other) {
-		return fmt.Sprintf(" %s ", v)
+		return v
 	} else {
-		return fmt.Sprintf(" %s%s ", v, strings.Repeat(" ", len(other)-len(v)))
+		return fmt.Sprintf("%s%s", strings.Repeat(" ", len(other)-len(v)), v)
 	}
 }
 
 func answerString(first, second string) {
-	//  +-----------------+--------+
-	//  | Part 1          | Part 2 |
-	//  |-----------------+--------|
-	//  | 123413419459185 | 12345  |
-	//  +-----------------+--------+
+	dashes := strings.Repeat("-", maths.Max(len(first), len(second))+2+len("Part X / "))
 
-	dashesA1 := strings.Repeat("-", maxLength("Part 1", first)+2)
-	dashesA2 := strings.Repeat("-", maxLength("Part 2", second)+2)
+	colorstring.Printf("[yellow]+%s+\n", dashes)
+	colorstring.Printf("[yellow]| [cyan]Part 1 / [white]%s [yellow]|\n", rightAlign(first, second))
+	colorstring.Printf("[yellow]| [cyan]Part 2 / [white]%s [yellow]|\n", rightAlign(second, first))
+	colorstring.Printf("[yellow]+%s+\n", dashes)
 
-	colorstring.Printf("[yellow]+%s+%s+\n", dashesA1, dashesA2)
-	colorstring.Printf("[yellow]|[green]%s[yellow]|[green]%s[yellow]|\n", leftAlign("Part 1", first), leftAlign("Part 2", second))
-	colorstring.Printf("[yellow]|%s+%s|\n", dashesA1, dashesA2)
-	colorstring.Printf("[yellow]|[cyan]%s[yellow]|[cyan]%s[yellow]|\n", leftAlign(first, "Part 1"), leftAlign(second, "Part 2"))
-	colorstring.Printf("[yellow]+%s+%s+\n", dashesA1, dashesA2)
+	// +-------------------------+
+	// | Part 1 / 54561213452435 |
+	// | Part 2 /          54076 |
+	// +-----------=-------------+
 }
 
 func answerInt(first, second int) {
