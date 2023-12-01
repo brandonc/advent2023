@@ -2,8 +2,10 @@
 package commands
 
 import (
+	"github.com/brandonc/advent2023/solutions/day01"
 	"github.com/brandonc/advent2023/solutions/solution"
 )
 
 var SolutionCommands = map[string]solution.SolutionFactory{
+	"1": day01.Factory,
 }
