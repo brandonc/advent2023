@@ -10,4 +10,7 @@ today:
 tomorrow:
 	ARG=tomorrow go generate internal/commands/init.go
 
-.PHONY: build generate today tomorrow
+test:
+	LOG_LEVEL=debug go test ./solutions/...
+
+.PHONY: build generate today tomorrow test
