@@ -29,8 +29,7 @@ func main() {
 		printUsage()
 	}
 
-	answer1, answer2, err := solutionFactory().Solve(input)
-	ui.Die(err)
+	answer1, answer2 := solutionFactory().Solve(input)
 
 	ui.Answer(answer1, answer2)
 }

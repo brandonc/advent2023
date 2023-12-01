@@ -140,12 +140,12 @@ func part2(lines []string) int {
 	return sum
 }
 
-func (d day01) Solve(reader io.Reader) (any, any, error) {
+func (d day01) Solve(reader io.Reader) (any, any) {
 	lines := make([]string, 0)
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
 
-	return part1(lines), part2(lines), nil
+	return part1(lines), part2(lines)
 }

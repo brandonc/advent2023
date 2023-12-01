@@ -142,8 +142,8 @@ func Factory() solution.Solver {
 	return day{{.DayPadded}}{}
 }
 
-func (d day{{.DayPadded}}) Solve(reader io.Reader) (any, any, error) {
-	return 0, 0, nil
+func (d day{{.DayPadded}}) Solve(reader io.Reader) (any, any) {
+	return 0, 0
 }
 `))
 
@@ -155,16 +155,12 @@ import (
 )
 
 func TestSampleInput(t *testing.T) {
-	a1, a2, err := Factory().Solve(strings.NewReader(` + "`" + `2-4,6-8
+	a1, a2 := Factory().Solve(strings.NewReader(` + "`" + `2-4,6-8
 2-3,4-5
 5-7,7-9
 2-8,3-7
 6-6,4-6
 2-6,4-8` + "`" + `))
-
-	if err != nil {
-		t.Fatalf("Expected no error, got %s", err)
-	}
 
 	if expected := 0; a1 != expected {
 		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
