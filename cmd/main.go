@@ -30,7 +30,6 @@ func main() {
 	}
 
 	answer1, answer2 := solutionFactory().Solve(input)
-
 	ui.Answer(answer1, answer2)
 }
 

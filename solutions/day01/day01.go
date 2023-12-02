@@ -11,11 +11,8 @@ package day01
 
 import (
 	"bufio"
-	"fmt"
 	"io"
-	"strconv"
 
-	"github.com/brandonc/advent2023/internal/ui"
 	"github.com/brandonc/advent2023/solutions/solution"
 )
 
@@ -54,13 +51,6 @@ var numbersSpelled = map[string]byte{
 	"zero":  '0',
 }
 
-func combineDigits(a, b byte) int {
-	number := fmt.Sprintf("%c%c", a, b)
-	amount, err := strconv.Atoi(number)
-	ui.Assert(err == nil, fmt.Sprintf("Cannot convert %q to int", number))
-	return amount
-}
-
 func part1(lines []string) int {
 	sum := 0
 	for _, line := range lines {
@@ -85,7 +75,7 @@ func part1(lines []string) int {
 			continue
 		}
 
-		sum += combineDigits(first, last)
+		sum += (int(first-'0') * 10) + int(last-'0')
 	}
 
 	return sum
@@ -134,7 +124,7 @@ func part2(lines []string) int {
 			}
 		}
 
-		sum += combineDigits(first, last)
+		sum += (int(first-'0') * 10) + int(last-'0')
 	}
 
 	return sum
