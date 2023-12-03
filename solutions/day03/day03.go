@@ -107,54 +107,46 @@ func (d day03) adjacentNumbers(row, col int) []int {
 	// Look NW
 	if row >= 1 {
 		if col >= 1 && isDigit(d.grid[row-1][col-1]) {
-			num := d.parseNumberAt(row-1, col-1)
-			nums = append(nums, num)
+			nums = append(nums, d.parseNumberAt(row-1, col-1))
 			hasNW = true
 		}
 
 		// Look N
 		if isDigit(d.grid[row-1][col]) {
 			if !hasNW {
-				num := d.parseNumberAt(row-1, col)
-				nums = append(nums, num)
+				nums = append(nums, d.parseNumberAt(row-1, col))
 			}
 		} else if d.grid[row-1][col] == '.' && col < columns-1 && isDigit(d.grid[row-1][col+1]) {
 			// Nothing N so look NE
-			num := d.parseNumberAt(row-1, col+1)
-			nums = append(nums, num)
+			nums = append(nums, d.parseNumberAt(row-1, col+1))
 		}
 	}
 
 	// Look E
 	if col >= 1 && isDigit(d.grid[row][col-1]) {
-		num := d.parseNumberAt(row, col-1)
-		nums = append(nums, num)
+		nums = append(nums, d.parseNumberAt(row, col-1))
 	}
 
 	// Look W
 	if col < columns-1 && isDigit(d.grid[row][col+1]) {
-		num := d.parseNumberAt(row, col+1)
-		nums = append(nums, num)
+		nums = append(nums, d.parseNumberAt(row, col+1))
 	}
 
 	// Look SW
 	if row < rows {
 		if col >= 1 && isDigit(d.grid[row+1][col-1]) {
-			num := d.parseNumberAt(row+1, col-1)
-			nums = append(nums, num)
+			nums = append(nums, d.parseNumberAt(row+1, col-1))
 			hasSW = true
 		}
 
 		// Look S
 		if isDigit(d.grid[row+1][col]) {
 			if !hasSW {
-				num := d.parseNumberAt(row+1, col)
-				nums = append(nums, num)
+				nums = append(nums, d.parseNumberAt(row+1, col))
 			}
 		} else if d.grid[row+1][col] == '.' && col < columns-1 && isDigit(d.grid[row+1][col+1]) {
 			// Nothing S so look SE
-			num := d.parseNumberAt(row+1, col+1)
-			nums = append(nums, num)
+			nums = append(nums, d.parseNumberAt(row+1, col+1))
 		}
 	}
 
