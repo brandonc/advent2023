@@ -1,12 +1,3 @@
-// package day01 is a substring problem with the objective of
-// finding digits within lines of text.
-//
-// For part 1, the first and last digits from each line are
-// concatenated, converted to an integer, and added to a sum.
-//
-// Part 2 adds the possibility of spelled numbers "zero" through
-// "nine" which are concatenated value-wise and added to a sum
-// as before.
 package day01
 
 import (
