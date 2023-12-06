@@ -132,10 +132,6 @@ func (d day05) parseAlmanac(scanner *bufio.Scanner) {
 	}
 }
 
-func mergeSeedRanges(seeds []int) []int {
-
-}
-
 func (d day05) Solve(reader io.Reader) (any, any) {
 	scanner := bufio.NewScanner(reader)
 	var seeds []int
@@ -148,5 +144,5 @@ func (d day05) Solve(reader io.Reader) (any, any) {
 
 	d.parseAlmanac(scanner)
 
-	return d.part1(seeds), d.part2(mergeSeedRanges(seeds))
+	return d.part1(seeds), d.part2(seeds)
 }
