@@ -2,9 +2,6 @@ package camelcards
 
 import (
 	"cmp"
-	"fmt"
-
-	"github.com/brandonc/advent2023/internal/ui"
 )
 
 type game struct {
@@ -36,16 +33,6 @@ type Hand struct {
 	Bid   int
 }
 
-const (
-	FiveOfAKind  HandType = 7
-	FourOfAKind  HandType = 6
-	FullHouse    HandType = 5
-	ThreeOfAKind HandType = 4
-	TwoPair      HandType = 3
-	OnePair      HandType = 2
-	HighCard     HandType = 1
-)
-
 func histogram(s string) map[byte]int {
 	result := make(map[byte]int)
 
@@ -56,7 +43,7 @@ func histogram(s string) map[byte]int {
 	return result
 }
 
-func (g game) Type(hand string) HandType {
+func (g game) rankHand(hand string) HandType {
 	var wildCard byte = 0
 	if g.jackIsWild {
 		wildCard = 'J'
@@ -65,19 +52,29 @@ func (g game) Type(hand string) HandType {
 	hist := histogram(hand)
 
 	if isFiveOfAKind(hist, wildCard) {
-		return FiveOfAKind
+		return 7
 	} else if isFourOfAKind(hist, wildCard) {
-		return FourOfAKind
+		return 6
 	} else if isFullHouse(hist, wildCard) {
-		return FullHouse
+		return 5
 	} else if isThreeOfAKind(hist, wildCard) {
-		return ThreeOfAKind
+		return 4
 	} else if isTwoPair(hist, wildCard) {
-		return TwoPair
+		return 3
 	} else if isOnePair(hist, wildCard) {
-		return OnePair
+		return 2
 	}
-	return HighCard
+	return 1
+}
+
+func (g game) rankCard(card byte) int {
+	ranks := g.Ranks()
+	for index, c := range ranks {
+		if card == c {
+			return len(ranks) - index
+		}
+	}
+	return 0
 }
 
 func (g game) Score(hands []Hand) int {
@@ -194,24 +191,14 @@ func isOnePair(hist map[byte]int, wildcard byte) bool {
 	return false
 }
 
-func (g game) rank(card byte) int {
-	ranks := g.Ranks()
-	for index, c := range ranks {
-		if card == c {
-			return len(ranks) - index
-		}
-	}
-	return 0
-}
-
 func (g game) Compare(a, b Hand) int {
-	primary := cmp.Compare(g.Type(a.Cards), g.Type(b.Cards))
+	primary := cmp.Compare(g.rankHand(a.Cards), g.rankHand(b.Cards))
 	if primary != 0 {
 		return primary
 	}
 
 	for i := 0; i < 5; i++ {
-		aRank, bRank := g.rank(a.Cards[i]), g.rank(b.Cards[i])
+		aRank, bRank := g.rankCard(a.Cards[i]), g.rankCard(b.Cards[i])
 		if aRank > bRank {
 			return 1
 		} else if aRank < bRank {
@@ -219,6 +206,5 @@ func (g game) Compare(a, b Hand) int {
 		}
 	}
 
-	ui.Die(fmt.Errorf("two hands are identical: %q", a.Cards))
 	return 0
 }
