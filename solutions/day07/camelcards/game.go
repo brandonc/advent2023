@@ -43,11 +43,15 @@ func histogram(s string) map[byte]int {
 	return result
 }
 
-func (g game) rankHand(hand string) HandType {
-	var wildCard byte = 0
+func (g game) WildCard() byte {
 	if g.jackIsWild {
-		wildCard = 'J'
+		return 'J'
 	}
+	return '0'
+}
+
+func (g game) rankHand(hand string) HandType {
+	var wildCard byte = g.WildCard()
 
 	hist := histogram(hand)
 
@@ -77,20 +81,10 @@ func (g game) rankCard(card byte) int {
 	return 0
 }
 
-func (g game) Score(hands []Hand) int {
-	var score = 0
-	for i := len(hands) - 1; i >= 0; i-- {
-		score += hands[i].Bid * (i + 1)
-	}
-	return score
-}
-
 func isFiveOfAKind(hist map[byte]int, wildcard byte) bool {
 	for c, v := range hist {
-		if c == wildcard {
-			if v == 5 {
-				return true
-			}
+		if c == wildcard && v == 5 {
+			return true
 		}
 
 		if v+hist[wildcard] == 5 {
@@ -192,12 +186,11 @@ func isOnePair(hist map[byte]int, wildcard byte) bool {
 }
 
 func (g game) Compare(a, b Hand) int {
-	primary := cmp.Compare(g.rankHand(a.Cards), g.rankHand(b.Cards))
-	if primary != 0 {
+	if primary := cmp.Compare(g.rankHand(a.Cards), g.rankHand(b.Cards)); primary != 0 {
 		return primary
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < len(a.Cards); i++ {
 		aRank, bRank := g.rankCard(a.Cards[i]), g.rankCard(b.Cards[i])
 		if aRank > bRank {
 			return 1
@@ -207,4 +200,12 @@ func (g game) Compare(a, b Hand) int {
 	}
 
 	return 0
+}
+
+func (g game) Score(hands []Hand) int {
+	var score = 0
+	for i := len(hands) - 1; i >= 0; i-- {
+		score += hands[i].Bid * (i + 1)
+	}
+	return score
 }
