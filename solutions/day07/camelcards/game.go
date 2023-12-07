@@ -88,79 +88,19 @@ func (g game) Score(hands []Hand) int {
 	return score
 }
 
-func isFiveOfAKindNoWildcard(hist map[byte]int) bool {
-	for _, v := range hist {
-		if v == 5 {
-			return true
-		}
-	}
-	return false
-}
-
-func isFourOfAKindNoWildcard(hist map[byte]int) bool {
-	for _, v := range hist {
-		if v == 4 {
-			return true
-		}
-	}
-	return false
-}
-
-func isFullHouseNoWildcard(hist map[byte]int) bool {
-	var three, two byte = 0, 0
-	for c, v := range hist {
-		if v == 3 {
-			three = c
-		} else if v == 2 {
-			two = c
-		}
-	}
-	return three > 0 && two > 0
-}
-
-func isThreeOfAKindNoWildcard(hist map[byte]int) bool {
-	for _, v := range hist {
-		if v == 3 {
-			return true
-		}
-	}
-	return false
-}
-
-func isTwoPairNoWildcard(hist map[byte]int) bool {
-	var a, b byte = 0, 0
-	for c, v := range hist {
-		if v == 2 {
-			if a == 0 {
-				a = c
-			} else {
-				b = c
-			}
-		}
-	}
-	return a > 0 && b > 0
-}
-
-func isOnePairNoWildcard(hist map[byte]int) bool {
-	for _, v := range hist {
-		if v == 2 {
-			return true
-		}
-	}
-	return false
-}
-
 func isFiveOfAKind(hist map[byte]int, wildcard byte) bool {
 	for c, v := range hist {
 		if c == wildcard {
-			continue
+			if v == 5 {
+				return true
+			}
 		}
 
 		if v+hist[wildcard] == 5 {
 			return true
 		}
 	}
-	return isFiveOfAKindNoWildcard(hist)
+	return false
 }
 
 func isFourOfAKind(hist map[byte]int, wildcard byte) bool {
@@ -173,7 +113,7 @@ func isFourOfAKind(hist map[byte]int, wildcard byte) bool {
 			return true
 		}
 	}
-	return isFourOfAKindNoWildcard(hist)
+	return false
 }
 
 func isFullHouse(hist map[byte]int, wildcard byte) bool {
@@ -205,7 +145,7 @@ func isFullHouse(hist map[byte]int, wildcard byte) bool {
 		}
 	}
 
-	return (three > 0 && two > 0) || isFullHouseNoWildcard(hist)
+	return (three > 0 && two > 0)
 }
 
 func isThreeOfAKind(hist map[byte]int, wildcard byte) bool {
@@ -218,7 +158,7 @@ func isThreeOfAKind(hist map[byte]int, wildcard byte) bool {
 			return true
 		}
 	}
-	return isThreeOfAKindNoWildcard(hist)
+	return false
 }
 
 func isTwoPair(hist map[byte]int, wildcard byte) bool {
@@ -238,7 +178,7 @@ func isTwoPair(hist map[byte]int, wildcard byte) bool {
 			}
 		}
 	}
-	return (a > 0 && b > 0) || isTwoPairNoWildcard(hist)
+	return (a > 0 && b > 0)
 }
 
 func isOnePair(hist map[byte]int, wildcard byte) bool {
@@ -251,7 +191,7 @@ func isOnePair(hist map[byte]int, wildcard byte) bool {
 			return true
 		}
 	}
-	return isOnePairNoWildcard(hist)
+	return false
 }
 
 func (g game) rank(card byte) int {
