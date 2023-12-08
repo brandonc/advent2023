@@ -42,7 +42,6 @@ func GCD(a, b int) int {
 	return a
 }
 
-// find Least Common Multiple (LCM) via GCD
 func LCM(a, b int) int {
 	return a * b / GCD(a, b)
 }
