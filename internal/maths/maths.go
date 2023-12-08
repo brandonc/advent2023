@@ -32,3 +32,17 @@ func IntPow(n, m int) int {
 	}
 	return result
 }
+
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// find Least Common Multiple (LCM) via GCD
+func LCM(a, b int) int {
+	return a * b / GCD(a, b)
+}
