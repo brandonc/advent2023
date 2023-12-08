@@ -15,7 +15,7 @@ func AbsInt(i int) int {
 	return i
 }
 
-func Max(i, j int) int {
+func MaxInt(i, j int) int {
 	if i > j {
 		return i
 	}

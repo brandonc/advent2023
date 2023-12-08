@@ -36,11 +36,17 @@ func Debugf(message string, a ...any) {
 	Debug(fmt.Sprintf(message, a...))
 }
 
-func rightAlign(v, other string) string {
-	if len(v) > len(other) {
+func rightAlign(v string, other ...string) string {
+	maxOther := 0
+	for _, o := range other {
+		if len(o) > maxOther {
+			maxOther = len(o)
+		}
+	}
+	if len(v) > maxOther {
 		return v
 	} else {
-		return fmt.Sprintf("%s%s", strings.Repeat(" ", len(other)-len(v)), v)
+		return fmt.Sprintf("%s%s", strings.Repeat(" ", maxOther-len(v)), v)
 	}
 }
 
@@ -52,6 +58,7 @@ func humanizeDuration(d time.Duration) string {
 		{"s", int(d.Seconds())},
 		{"ms", int(d.Milliseconds())},
 		{"μs", int(d.Microseconds())},
+		{"ns", int(d.Nanoseconds())},
 	}
 
 	for _, u := range units {
@@ -62,7 +69,7 @@ func humanizeDuration(d time.Duration) string {
 		return fmt.Sprintf("%d%s", u.amount, u.unit)
 	}
 
-	return "0 μs"
+	return "0 ns"
 }
 
 func Answer(part1 func() int, part2 func() int) {
@@ -74,12 +81,11 @@ func Answer(part1 func() int, part2 func() int) {
 	answerPart2 := fmt.Sprintf("%d", part2())
 	timePart2 := time.Since(startTimePart2)
 
-	dashes := strings.Repeat("-", maths.Max(len(answerPart1), len(answerPart2))+2+len("Part X / "))
+	dashes := strings.Repeat("-", maths.MaxInt(len(answerPart1), len(answerPart2))+2+len("Part X / "))
 
 	colorstring.Printf("[yellow]+%s+\n", dashes)
-	colorstring.Printf("[yellow]| [cyan]Part 1 / [white]%s [yellow]| [dark_gray]%d μs\n", rightAlign(answerPart1, answerPart2), timePart1.Microseconds())
-
-	colorstring.Printf("[yellow]| [cyan]Part 2 / [white]%s [yellow]| [dark_gray]%d μs\n", rightAlign(answerPart2, answerPart1), timePart2.Microseconds())
+	colorstring.Printf("[yellow]| [cyan]Part 1 / [white]%s [yellow]| [dark_gray]%s\n", rightAlign(answerPart1, answerPart2), humanizeDuration(timePart1))
+	colorstring.Printf("[yellow]| [cyan]Part 2 / [white]%s [yellow]| [dark_gray]%s\n", rightAlign(answerPart2, answerPart1), humanizeDuration(timePart2))
 	colorstring.Printf("[yellow]+%s+\n", dashes)
 
 	// +-------------------------+
@@ -87,5 +93,5 @@ func Answer(part1 func() int, part2 func() int) {
 	// | Part 2 /          54076 |
 	// +-----------=-------------+
 
-	colorstring.Printf("[dark_gray] %s\n", humanizeDuration(timePart1+timePart2))
+	colorstring.Printf("[dark_gray]%s\n", humanizeDuration(timePart1+timePart2))
 }

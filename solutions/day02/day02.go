@@ -77,7 +77,7 @@ func (d day02) solve(reader io.Reader) (any, any) {
 					state.impossible = true
 				}
 
-				state.minimums[fieldSplit[1]] = maths.Max(state.minimums[fieldSplit[1]], numColor)
+				state.minimums[fieldSplit[1]] = maths.MaxInt(state.minimums[fieldSplit[1]], numColor)
 			}
 		}
 
