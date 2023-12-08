@@ -29,6 +29,28 @@ func (n Node) Navigate(direction byte) *Node {
 	return n.Right
 }
 
+func (n *Node) init(nodes map[string]*Node, leftLabel, rightLabel string) {
+	left, hasLeft := nodes[leftLabel]
+	if !hasLeft {
+		left = &Node{
+			Label: leftLabel,
+		}
+		nodes[leftLabel] = left
+	}
+
+	right, hasLeft := nodes[rightLabel]
+	if !hasLeft {
+		right = &Node{
+			Label: rightLabel,
+		}
+		nodes[rightLabel] = right
+	}
+
+	n.Left = left
+	n.Right = right
+	nodes[n.Label] = n
+}
+
 func parseInput(reader io.Reader) (string, map[string]*Node) {
 	scanner := bufio.NewScanner(reader)
 
@@ -43,9 +65,6 @@ func parseInput(reader io.Reader) (string, map[string]*Node) {
 		line := scanner.Text()
 
 		thisLabel := line[0:3]
-		leftNodeLabel := line[7:10]
-		rightNodeLabel := line[12:15]
-
 		thisNode, hasSelf := nodes[thisLabel]
 
 		if !hasSelf {
@@ -54,26 +73,7 @@ func parseInput(reader io.Reader) (string, map[string]*Node) {
 			}
 		}
 
-		leftNode, hasLeft := nodes[leftNodeLabel]
-		if !hasLeft {
-			leftNode = &Node{
-				Label: leftNodeLabel,
-			}
-			nodes[leftNodeLabel] = leftNode
-		}
-
-		rightNode, hasRight := nodes[rightNodeLabel]
-		if !hasRight {
-			rightNode = &Node{
-				Label: rightNodeLabel,
-			}
-			nodes[rightNodeLabel] = rightNode
-		}
-
-		thisNode.Left = leftNode
-		thisNode.Right = rightNode
-
-		nodes[thisNode.Label] = thisNode
+		thisNode.init(nodes, line[7:10], line[12:15])
 	}
 
 	return instructions, nodes
