@@ -142,8 +142,12 @@ func Factory() solution.Solver {
 	return day{{.DayPadded}}{}
 }
 
-func (d day{{.DayPadded}}) Solve(reader io.Reader) (any, any) {
-	return 0, 0
+func (d day{{.DayPadded}}) Part1(reader io.Reader) int {
+	return 0
+}
+
+func (d day{{.DayPadded}}) Part2(reader io.Reader) int {
+	return 0
 }
 `))
 
@@ -154,20 +158,25 @@ import (
 	"testing"
 )
 
-func TestSampleInput(t *testing.T) {
-	a1, a2 := Factory().Solve(strings.NewReader(` + "`" + `2-4,6-8
-2-3,4-5
-5-7,7-9
-2-8,3-7
-6-6,4-6
-2-6,4-8` + "`" + `))
+var (
+	sample1 = ` + "``" + `
 
-	if expected := 0; a1 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
+	sample2 = ` + "``" + `
+)
+
+func TestPart1(t *testing.T) {
+	answer := Factory().Part1(strings.NewReader(sample1))
+
+	if expected := 0; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
+}
 
-	if expected := 0; a2 != expected {
-		t.Fatalf("Expected answer 2 to be %d, got %d", expected, a2)
+func TestPart2(t *testing.T) {
+	answer := Factory().Part2(strings.NewReader(sample2))
+
+	if expected := 0; answer != expected {
+		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
 	}
 }
 `))
