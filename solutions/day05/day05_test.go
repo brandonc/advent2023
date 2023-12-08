@@ -5,8 +5,7 @@ import (
 	"testing"
 )
 
-func TestSampleInput(t *testing.T) {
-	a1, a2 := Factory().Solve(strings.NewReader(`seeds: 79 14 55 13
+var sample = `seeds: 79 14 55 13
 
 seed-to-soil map:
 50 98 2
@@ -38,13 +37,20 @@ temperature-to-humidity map:
 
 humidity-to-location map:
 60 56 37
-56 93 4`))
+56 93 4`
 
-	if expected := 35; a1 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
+func TestPart1(t *testing.T) {
+	answer := Factory().Part1(strings.NewReader(sample))
+
+	if expected := 35; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
+}
 
-	if expected := 46; a2 != expected {
-		t.Fatalf("Expected answer 2 to be %d, got %d", expected, a2)
+func TestPart2(t *testing.T) {
+	answer := Factory().Part2(strings.NewReader(sample))
+
+	if expected := 46; answer != expected {
+		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
 	}
 }

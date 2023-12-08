@@ -3,7 +3,8 @@ package solution
 import "io"
 
 type Solver interface {
-	Solve(input io.Reader) (any, any)
+	Part1(input io.Reader) int
+	Part2(input io.Reader) int
 }
 
 type SolutionFactory func() Solver

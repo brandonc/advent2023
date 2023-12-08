@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
+	"time"
 
 	"github.com/brandonc/advent2023/internal/maths"
 	"github.com/mitchellh/colorstring"
@@ -44,32 +44,48 @@ func rightAlign(v, other string) string {
 	}
 }
 
-func answerString(first, second string) {
-	dashes := strings.Repeat("-", maths.Max(len(first), len(second))+2+len("Part X / "))
+func humanizeDuration(d time.Duration) string {
+	units := []struct {
+		unit   string
+		amount int
+	}{
+		{"s", int(d.Seconds())},
+		{"ms", int(d.Milliseconds())},
+		{"μs", int(d.Microseconds())},
+	}
+
+	for _, u := range units {
+		if u.amount == 0 {
+			continue
+		}
+
+		return fmt.Sprintf("%d%s", u.amount, u.unit)
+	}
+
+	return "0 μs"
+}
+
+func Answer(part1 func() int, part2 func() int) {
+	startTimePart1 := time.Now()
+	answerPart1 := fmt.Sprintf("%d", part1())
+	timePart1 := time.Since(startTimePart1)
+
+	startTimePart2 := time.Now()
+	answerPart2 := fmt.Sprintf("%d", part2())
+	timePart2 := time.Since(startTimePart2)
+
+	dashes := strings.Repeat("-", maths.Max(len(answerPart1), len(answerPart2))+2+len("Part X / "))
 
 	colorstring.Printf("[yellow]+%s+\n", dashes)
-	colorstring.Printf("[yellow]| [cyan]Part 1 / [white]%s [yellow]|\n", rightAlign(first, second))
-	colorstring.Printf("[yellow]| [cyan]Part 2 / [white]%s [yellow]|\n", rightAlign(second, first))
+	colorstring.Printf("[yellow]| [cyan]Part 1 / [white]%s [yellow]| [dark_gray]%d μs\n", rightAlign(answerPart1, answerPart2), timePart1.Microseconds())
+
+	colorstring.Printf("[yellow]| [cyan]Part 2 / [white]%s [yellow]| [dark_gray]%d μs\n", rightAlign(answerPart2, answerPart1), timePart2.Microseconds())
 	colorstring.Printf("[yellow]+%s+\n", dashes)
 
 	// +-------------------------+
 	// | Part 1 / 54561213452435 |
 	// | Part 2 /          54076 |
 	// +-----------=-------------+
-}
 
-func answerInt(first, second int) {
-	a1 := strconv.FormatInt(int64(first), 10)
-	a2 := strconv.FormatInt(int64(second), 10)
-
-	answerString(a1, a2)
-}
-
-func Answer(first, second any) {
-	switch first.(type) {
-	case int, int64:
-		answerInt(first.(int), second.(int))
-	case string:
-		answerString(first.(string), second.(string))
-	}
+	colorstring.Printf("[dark_gray] %s\n", humanizeDuration(timePart1+timePart2))
 }

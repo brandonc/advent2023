@@ -6,7 +6,7 @@ import (
 )
 
 func TestPart1Sample1(t *testing.T) {
-	a1, _ := Factory().Solve(strings.NewReader(`RL
+	answer := Factory().Part1(strings.NewReader(`RL
 
 AAA = (BBB, CCC)
 BBB = (DDD, EEE)
@@ -16,25 +16,25 @@ EEE = (EEE, EEE)
 GGG = (GGG, GGG)
 ZZZ = (ZZZ, ZZZ)`))
 
-	if expected := 2; a1 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
+	if expected := 2; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
 }
 
 func TestPart1Sample2(t *testing.T) {
-	a1, _ := Factory().Solve(strings.NewReader(`LLR
+	answer := Factory().Part1(strings.NewReader(`LLR
 
 AAA = (BBB, BBB)
 BBB = (AAA, ZZZ)
 ZZZ = (ZZZ, ZZZ)`))
 
-	if expected := 6; a1 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
+	if expected := 6; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
 }
 
 func TestPart2Sample1(t *testing.T) {
-	_, a2 := Factory().Solve(strings.NewReader(`LR
+	answer := Factory().Part2(strings.NewReader(`LR
 
 11A = (11B, XXX)
 11B = (XXX, 11Z)
@@ -45,7 +45,7 @@ func TestPart2Sample1(t *testing.T) {
 22Z = (22B, 22B)
 XXX = (XXX, XXX)`))
 
-	if expected := 6; a2 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a2)
+	if expected := 6; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
 }

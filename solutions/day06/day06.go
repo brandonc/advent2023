@@ -78,7 +78,7 @@ func (race Race) WaysToWin() int {
 	return ways
 }
 
-func (d day06) Solve(reader io.Reader) (any, any) {
+func (d day06) Part1(reader io.Reader) int {
 	input, err := io.ReadAll(reader)
 	ui.Die(err)
 
@@ -89,7 +89,14 @@ func (d day06) Solve(reader io.Reader) (any, any) {
 		part1 *= race.WaysToWin()
 	}
 
+	return part1
+}
+
+func (d day06) Part2(reader io.Reader) int {
+	input, err := io.ReadAll(reader)
+	ui.Die(err)
+
 	part2Race := parseRacePart2(string(input))
 
-	return part1, part2Race.WaysToWin()
+	return part2Race.WaysToWin()
 }

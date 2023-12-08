@@ -34,16 +34,19 @@ func parseInput(reader io.Reader) []camelcards.Hand {
 	return hands
 }
 
-func (d day07) Solve(reader io.Reader) (any, any) {
+func (d day07) Part1(reader io.Reader) int {
 	hands := parseInput(reader)
 
 	part1 := camelcards.Game()
 	slices.SortFunc(hands, part1.Compare)
 
-	part1Score := part1.Score(hands)
+	return part1.Score(hands)
+}
 
+func (d day07) Part2(reader io.Reader) int {
+	hands := parseInput(reader)
 	part2 := camelcards.GameWithJacksWild()
 	slices.SortFunc(hands, part2.Compare)
 
-	return part1Score, part2.Score(hands)
+	return part2.Score(hands)
 }

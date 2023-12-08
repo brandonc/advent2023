@@ -23,7 +23,17 @@ func Factory() solution.Solver {
 	return &day02{}
 }
 
-func (d day02) Solve(reader io.Reader) (any, any) {
+func (d day02) Part1(reader io.Reader) int {
+	result, _ := d.solve(reader)
+	return result.(int)
+}
+
+func (d day02) Part2(reader io.Reader) int {
+	_, result := d.solve(reader)
+	return result.(int)
+}
+
+func (d day02) solve(reader io.Reader) (any, any) {
 	var part1, part2 = 0, 0
 
 	scanner := bufio.NewScanner(reader)

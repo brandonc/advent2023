@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -29,8 +30,14 @@ func main() {
 		printUsage()
 	}
 
-	answer1, answer2 := solutionFactory().Solve(input)
-	ui.Answer(answer1, answer2)
+	var buf bytes.Buffer
+	tee := io.TeeReader(input, &buf)
+	solution := solutionFactory()
+
+	ui.Answer(
+		func() int { return solution.Part1(tee) },
+		func() int { return solution.Part2(&buf) },
+	)
 }
 
 func printUsage() {

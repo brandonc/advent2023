@@ -5,8 +5,7 @@ import (
 	"testing"
 )
 
-func TestSampleInput(t *testing.T) {
-	a1, a2 := Factory().Solve(strings.NewReader(`467..114..
+var sample = `467..114..
 ...*......
 ..35..633.
 ......#...
@@ -15,22 +14,31 @@ func TestSampleInput(t *testing.T) {
 ..592.....
 ......755.
 ...$.*....
-.664.598..`))
+.664.598..`
 
-	if expected := 4361; a1 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
-	}
+var custom = `..3*...
+....827`
 
-	if expected := 467835; a2 != expected {
-		t.Fatalf("Expected answer 2 to be %d, got %d", expected, a2)
+func TestPart1(t *testing.T) {
+	answer := Factory().Part1(strings.NewReader(sample))
+
+	if expected := 4361; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
 }
 
-func TestCustomInput(t *testing.T) {
-	_, a2 := Factory().Solve(strings.NewReader(`..3*...
-....827`))
+func TestPart2(t *testing.T) {
+	answer := Factory().Part2(strings.NewReader(sample))
 
-	if expected := 2481; a2 != expected {
-		t.Fatalf("Expected answer 2 to be %d, got %d", expected, a2)
+	if expected := 467835; answer != expected {
+		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
+	}
+}
+
+func TestCustomPart2(t *testing.T) {
+	answer := Factory().Part2(strings.NewReader(custom))
+
+	if expected := 2481; answer != expected {
+		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
 	}
 }

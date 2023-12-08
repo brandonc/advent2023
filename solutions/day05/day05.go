@@ -132,7 +132,7 @@ func (d day05) parseAlmanac(scanner *bufio.Scanner) {
 	}
 }
 
-func (d day05) Solve(reader io.Reader) (any, any) {
+func (d day05) Part1(reader io.Reader) int {
 	scanner := bufio.NewScanner(reader)
 	var seeds []int
 	if scanner.Scan() && strings.HasPrefix(scanner.Text(), "seeds: ") {
@@ -143,6 +143,19 @@ func (d day05) Solve(reader io.Reader) (any, any) {
 	}
 
 	d.parseAlmanac(scanner)
+	return d.part1(seeds)
+}
 
-	return d.part1(seeds), d.part2(seeds)
+func (d day05) Part2(reader io.Reader) int {
+	scanner := bufio.NewScanner(reader)
+	var seeds []int
+	if scanner.Scan() && strings.HasPrefix(scanner.Text(), "seeds: ") {
+		seeds = scanInts(scanner.Text()[len("seeds: "):])
+		scanner.Scan() // Eat the next blank line
+	} else {
+		ui.Die(errors.New("first line did not contain seeds"))
+	}
+
+	d.parseAlmanac(scanner)
+	return d.part2(seeds)
 }

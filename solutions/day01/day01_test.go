@@ -5,25 +5,31 @@ import (
 	"testing"
 )
 
-func TestSampleInput(t *testing.T) {
-	a1, _ := Factory().Solve(strings.NewReader(`1abc2
+var sample1 = `1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
-treb7uchet`))
+treb7uchet`
 
-	_, a2 := Factory().Solve(strings.NewReader(`two1nine
+var sample2 = `two1nine
 eightwothree
 abcone2threexyz
 xtwone3four
 4nineeightseven2
 zoneight234
-7pqrstsixteen`))
+7pqrstsixteen`
 
-	if expected := 142; a1 != expected {
-		t.Fatalf("Expected answer 1 to be %d, got %d", expected, a1)
+func TestPart1(t *testing.T) {
+	answer := Factory().Part1(strings.NewReader(sample1))
+
+	if expected := 142; answer != expected {
+		t.Fatalf("Expected answer 1 to be %d, got %d", expected, answer)
 	}
+}
 
-	if expected := 281; a2 != expected {
-		t.Fatalf("Expected answer 2 to be %d, got %d", expected, a2)
+func TestPart2(t *testing.T) {
+	answer := Factory().Part2(strings.NewReader(sample2))
+
+	if expected := 281; answer != expected {
+		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
 	}
 }

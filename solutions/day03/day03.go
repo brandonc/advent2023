@@ -172,12 +172,22 @@ func (d day03) part2() int {
 	return sum
 }
 
-func (d day03) Solve(reader io.Reader) (any, any) {
+func (d *day03) parseGrid(reader io.Reader) {
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
 		line := scanner.Text()
 		d.grid = append(d.grid, []byte(line))
 	}
+}
 
-	return d.part1(), d.part2()
+func (d day03) Part1(reader io.Reader) int {
+	d.parseGrid(reader)
+
+	return d.part1()
+}
+
+func (d day03) Part2(reader io.Reader) int {
+	d.parseGrid(reader)
+
+	return d.part2()
 }

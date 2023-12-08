@@ -30,10 +30,38 @@ func scanCardNumbers(s string) []int {
 	return result
 }
 
-func (d day04) Solve(reader io.Reader) (any, any) {
+func (d day04) Part1(reader io.Reader) int {
 	scanner := bufio.NewScanner(reader)
 
-	var cards, part1 = 0, 0
+	var result = 0
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		// String parsing using delimeters
+		cardFieldSet := strings.Split(line, ":")
+		numbersSets := strings.Split(cardFieldSet[1], "|")
+
+		matching := ds.NewIntSet(
+			scanCardNumbers(numbersSets[1]),
+		).Intersect(
+			ds.NewIntSet(
+				scanCardNumbers(numbersSets[0]),
+			),
+		)
+
+		// Score doubles for each matching, which is 2^m when m >= 1
+		if len(matching) >= 1 {
+			result += maths.IntPow(2, len(matching)-1)
+		}
+	}
+
+	return result
+}
+
+func (d day04) Part2(reader io.Reader) int {
+	scanner := bufio.NewScanner(reader)
+
+	var cards = 0
 	// Ideally, you could use an array to keep track of the copy count, but I don't
 	// yet know how many cards there are. So use a map of ID -> copy count
 	copies := make(map[int]int)
@@ -61,11 +89,6 @@ func (d day04) Solve(reader io.Reader) (any, any) {
 			}
 		}
 
-		// Score doubles for each matching, which is 2^m when m >= 1
-		if len(matching) >= 1 {
-			part1 += maths.IntPow(2, len(matching)-1)
-		}
-
 		cards += 1
 	}
 
@@ -75,5 +98,5 @@ func (d day04) Solve(reader io.Reader) (any, any) {
 		part2 += c
 	}
 
-	return part1, part2
+	return part2
 }

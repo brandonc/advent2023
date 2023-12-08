@@ -42,7 +42,17 @@ var numbersSpelled = map[string]byte{
 	"zero":  '0',
 }
 
-func part1(lines []string) int {
+func readLines(reader io.Reader) []string {
+	lines := make([]string, 0)
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines
+}
+
+func (d day01) Part1(reader io.Reader) int {
+	lines := readLines(reader)
 	sum := 0
 	for _, line := range lines {
 		var first, last byte
@@ -72,7 +82,9 @@ func part1(lines []string) int {
 	return sum
 }
 
-func part2(lines []string) int {
+func (d day01) Part2(reader io.Reader) int {
+	lines := readLines(reader)
+
 	sum := 0
 	for _, line := range lines {
 		var first, last byte
@@ -119,14 +131,4 @@ func part2(lines []string) int {
 	}
 
 	return sum
-}
-
-func (d day01) Solve(reader io.Reader) (any, any) {
-	lines := make([]string, 0)
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-
-	return part1(lines), part2(lines)
 }
