@@ -92,12 +92,10 @@ func measurePairDim(a, b int, emptyDim []int, emptyDistance int) int {
 		d = -1
 	}
 	for move := a; move != b; move += d {
-		result += 1
 		if _, found := slices.BinarySearch[[]int](emptyDim, move); found {
 			result += emptyDistance
-			if emptyDistance > 1 {
-				result -= 1
-			}
+		} else {
+			result += 1
 		}
 	}
 	return result
@@ -117,7 +115,7 @@ func (i Image) MeasurePairs(emptyDistance int) int {
 
 func (d day11) Part1(reader io.Reader) int {
 	image := parseImage(reader)
-	return image.MeasurePairs(1)
+	return image.MeasurePairs(2)
 }
 
 func (d day11) Part2(reader io.Reader) int {
