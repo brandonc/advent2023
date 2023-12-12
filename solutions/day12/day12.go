@@ -49,21 +49,21 @@ func numWorkingArrangementsInternal(line []byte, groups string) int {
 
 	// If there are no groups left, ensure all remaining records are not '#'
 	if len(groups) == 0 {
-		for i := 0; i < len(line); i++ {
-			if line[i] == '#' {
-				return 0
-			}
+		if bytes.Contains(line, []byte{'#'}) {
+			return 0
 		}
 		return 1
 	}
 
-	// Ignore '.'
-	if line[0] == '.' {
+	switch line[0] {
+	case '.':
+		// Ignore '.'
 		return numWorkingArrangements(line[1:], groups)
-	}
-
-	// Try to consume the next group of #'s
-	if line[0] == '#' {
+	case '?':
+		// This is the '?' permutation case. Try both '.' and '#' for matches
+		return numWorkingArrangements(append([]byte{'#'}, line[1:]...), groups) +
+			numWorkingArrangements(append([]byte{'.'}, line[1:]...), groups)
+	default: // '#': do next group eval
 		groupsSplit := strings.SplitN(groups, ",", 2)
 		group, _ := strconv.Atoi(groupsSplit[0])
 		for i := 0; i < group; i++ {
@@ -71,21 +71,20 @@ func numWorkingArrangementsInternal(line []byte, groups string) int {
 				return 0
 			}
 		}
+
+		// Adjacent '#' indicates too many springs for this group
 		if line[group] == '#' {
 			return 0
 		}
 
 		if len(groupsSplit) == 1 {
-			// This ensures that the final group is an empty string
+			// This just ensures that the final group is an empty string
+			// if SplitN returned 1 substring
 			groupsSplit = append(groupsSplit, "")
 		}
 
 		return numWorkingArrangements(line[group+1:], groupsSplit[1])
 	}
-
-	// This is the '?' permutation case. Try both '.' and '#' for matches
-	return numWorkingArrangements(append([]byte{'#'}, line[1:]...), groups) +
-		numWorkingArrangements(append([]byte{'.'}, line[1:]...), groups)
 }
 
 func (p *Puzzle) Unfold() *Puzzle {
