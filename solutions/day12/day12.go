@@ -26,6 +26,7 @@ func Factory() solution.Solver {
 
 var cache = make(map[string]int, 4096)
 
+// A memoized version of numWorkingArrangementsInternal
 func numWorkingArrangements(line []byte, groups string) int {
 	key := fmt.Sprintf("%s|%s", line, groups)
 	if val, ok := cache[key]; ok {
@@ -59,10 +60,12 @@ func numWorkingArrangementsInternal(line []byte, groups string) int {
 	case '.':
 		// Ignore '.'
 		return numWorkingArrangements(line[1:], groups)
+
 	case '?':
 		// This is the '?' permutation case. Try both '.' and '#' for matches
 		return numWorkingArrangements(append([]byte{'#'}, line[1:]...), groups) +
 			numWorkingArrangements(append([]byte{'.'}, line[1:]...), groups)
+
 	default: // '#': do next group eval
 		groupsSplit := strings.SplitN(groups, ",", 2)
 		group, _ := strconv.Atoi(groupsSplit[0])
@@ -115,6 +118,7 @@ func (d day12) Part1(reader io.Reader) int {
 	sum := 0
 	puzzles := parse(reader)
 	for _, p := range puzzles {
+		// Appends a . at the end of each line to simplify final group matching
 		sum += numWorkingArrangements([]byte(string(p.Record)+"."), p.Contiguous)
 	}
 	return sum
@@ -125,6 +129,7 @@ func (d day12) Part2(reader io.Reader) int {
 	puzzles := parse(reader)
 	for _, p := range puzzles {
 		unfolded := p.Unfold()
+		// Appends a . at the end of each line to simplify final group matching
 		sum += numWorkingArrangements([]byte(string(unfolded.Record)+"."), unfolded.Contiguous)
 	}
 	return sum
