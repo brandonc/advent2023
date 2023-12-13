@@ -46,8 +46,8 @@ func parseTerrain(reader io.Reader) []Grid {
 	return result
 }
 
-// Recursively
-func (g Grid) compareColumnReflection(a, b int) bool {
+// Recursively compare columns for symmetry
+func (g Grid) compareColumnSymmetry(a, b int) bool {
 	if a < 0 || b >= len(g.Terrain[0]) {
 		return true
 	}
@@ -58,10 +58,11 @@ func (g Grid) compareColumnReflection(a, b int) bool {
 		}
 	}
 
-	return g.compareColumnReflection(a-1, b+1)
+	return g.compareColumnSymmetry(a-1, b+1)
 }
 
-func (g Grid) compareRowReflection(a, b int) bool {
+// Recursively compare rows for symmetry
+func (g Grid) compareRowSymmetry(a, b int) bool {
 	if a < 0 || b >= len(g.Terrain) {
 		return true
 	}
@@ -72,7 +73,7 @@ func (g Grid) compareRowReflection(a, b int) bool {
 		}
 	}
 
-	return g.compareRowReflection(a-1, b+1)
+	return g.compareRowSymmetry(a-1, b+1)
 }
 
 func (g Grid) VerticalSymmetry() int {
@@ -80,7 +81,7 @@ func (g Grid) VerticalSymmetry() int {
 		if x+1 == g.NotColumn {
 			continue
 		}
-		if g.compareColumnReflection(x, x+1) {
+		if g.compareColumnSymmetry(x, x+1) {
 			return x + 1
 		}
 	}
@@ -92,7 +93,7 @@ func (g Grid) HorizontalSymmetry() int {
 		if y+1 == g.NotRow {
 			continue
 		}
-		if g.compareRowReflection(y, y+1) {
+		if g.compareRowSymmetry(y, y+1) {
 			return y + 1
 		}
 	}
@@ -139,6 +140,8 @@ func (d day13) Part1(reader io.Reader) int {
 			sum += col
 		} else if row := grid.HorizontalSymmetry(); row > 0 {
 			sum += 100 * row
+		} else {
+			ui.Die(errors.New("No solution found"))
 		}
 	}
 
