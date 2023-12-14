@@ -137,7 +137,6 @@ import (
 
 type day{{.DayPadded}} struct{}
 
-// Factory must exist for codegen
 func Factory() solution.Solver {
 	return day{{.DayPadded}}{}
 }
