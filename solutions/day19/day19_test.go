@@ -23,11 +23,6 @@ hdj{m>838:A,pv}
 {x=2036,m=264,a=79,s=2244}
 {x=2461,m=1339,a=466,s=291}
 {x=2127,m=1623,a=2188,s=1013}`
-
-	sample2 = `in{x<1000:aaa,bbb}
-aaa{m<1000:A,R}
-bbb{m>2000:A,R}
-`
 )
 
 func TestPart1(t *testing.T) {
@@ -42,14 +37,6 @@ func TestPart2(t *testing.T) {
 	answer := Factory().Part2(strings.NewReader(sample1))
 
 	if expected := 167409079868000; answer != expected {
-		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
-	}
-}
-
-func TestPart2B(t *testing.T) {
-	answer := Factory().Part2(strings.NewReader(sample2))
-
-	if expected := 7000001; answer != expected {
 		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
 	}
 }

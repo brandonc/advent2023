@@ -126,7 +126,7 @@ func (w Workflows) Execute(name string, part Part) bool {
 	return w.Execute(workflow.Else, part)
 }
 
-func (w Workflows) ExecuteDistinct(name string, bounds map[byte][2]int) int {
+func (w Workflows) CountAcceptedRanges(name string, bounds map[byte][2]int) int {
 	if name == "A" {
 		// Return the product of all the remaining ranges.
 		products := 1
@@ -153,14 +153,14 @@ func (w Workflows) ExecuteDistinct(name string, bounds map[byte][2]int) int {
 		if condition.Operation == '<' {
 			// True case: [lower, condition.Value - 1]
 			trueBounds[condition.Attribute] = [2]int{bounds[condition.Attribute][0], condition.Value - 1}
-			sum += w.ExecuteDistinct(condition.Target, trueBounds)
+			sum += w.CountAcceptedRanges(condition.Target, trueBounds)
 
 			// False case: [condition.Value, upper]
 			bounds[condition.Attribute] = [2]int{condition.Value, bounds[condition.Attribute][1]}
 		} else {
 			// True case: [condition.Value + 1, upper]
 			trueBounds[condition.Attribute] = [2]int{condition.Value + 1, bounds[condition.Attribute][1]}
-			sum += w.ExecuteDistinct(condition.Target, trueBounds)
+			sum += w.CountAcceptedRanges(condition.Target, trueBounds)
 
 			// False case: [lower, condition.Value]
 			bounds[condition.Attribute] = [2]int{bounds[condition.Attribute][0], condition.Value}
@@ -168,7 +168,7 @@ func (w Workflows) ExecuteDistinct(name string, bounds map[byte][2]int) int {
 	}
 
 	// Finally, execute the else case with the remaining 'false' bounds.
-	sum += w.ExecuteDistinct(workflow.Else, bounds)
+	sum += w.CountAcceptedRanges(workflow.Else, bounds)
 	return sum
 }
 
@@ -203,7 +203,7 @@ func (d day19) Part2(reader io.Reader) int {
 	scanner := bufio.NewScanner(reader)
 	workflows := parseWorkflows(scanner)
 
-	return workflows.ExecuteDistinct("in", map[byte][2]int{
+	return workflows.CountAcceptedRanges("in", map[byte][2]int{
 		'x': {1, 4000},
 		'm': {1, 4000},
 		'a': {1, 4000},
