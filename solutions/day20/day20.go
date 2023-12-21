@@ -89,7 +89,7 @@ func (s *System) CalcuatatePressesUntilRxReceivesLow() (int, error) {
 	), nil
 }
 func (s *System) PressButton() {
-	s.sendBuffer = append(s.sendBuffer, SendBuffer{From: "button", To: []string{"broadcaster"}, Pulse: Low})
+	s.Send(SendBuffer{From: "button", To: []string{"broadcaster"}, Pulse: Low})
 	s.Presses += 1
 	s.process()
 }
@@ -102,10 +102,14 @@ type SendBuffer struct {
 
 func (s *System) process() {
 	for len(s.sendBuffer) > 0 {
-		// Process the buffer of messages to send, but
+		// Process the buffer of messages to send, but snapshot the buffer so that
+		// it's not modified by the modules sending messages. This ensures the
+		// correct ordering defined by the puzzle: process all messages from a
+		// single pulse before processing the next pulse.
 		sendNow := make([]SendBuffer, len(s.sendBuffer))
 		copy(sendNow, s.sendBuffer)
-		s.sendBuffer = make([]SendBuffer, 0)
+		c := &s.sendBuffer // Truncate in place
+		*c = (*c)[:0]
 
 		for i := 0; i < len(sendNow); i++ {
 			buffer := sendNow[i]
