@@ -30,4 +30,8 @@ func TestLCM(t *testing.T) {
 			t.Errorf("LCM of %d and %d was expected to be %d, but was %d", c.A, c.B, c.Expected, actual)
 		}
 	}
+
+	if actual := LCM(12, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100); actual != 25200 {
+		t.Errorf("LCM of 12, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100 was expected to be 25200, but was %d", actual)
+	}
 }

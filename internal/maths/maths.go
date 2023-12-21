@@ -42,6 +42,10 @@ func GCD(a, b int) int {
 	return a
 }
 
-func LCM(a, b int) int {
-	return a * b / GCD(a, b)
+func LCM(a int, b ...int) int {
+	result := a
+	for _, n := range b {
+		result = result * n / GCD(result, n)
+	}
+	return result
 }
