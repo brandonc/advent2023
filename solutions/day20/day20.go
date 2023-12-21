@@ -3,7 +3,6 @@ package day20
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"strings"
 
@@ -51,8 +50,7 @@ type FlipFlopModule struct {
 
 type ConjunctionModule struct {
 	Common
-	Memory        map[string]Pulse
-	AllLowPresses int
+	Memory map[string]Pulse
 }
 
 type BroadcasterModule struct {
@@ -268,10 +266,6 @@ func (d day20) Part2(reader io.Reader) int {
 
 	for {
 		system.PressButton()
-
-		if system.Presses%1_000_000 == 0 {
-			fmt.Printf("%d presses...\n", system.Presses)
-		}
 
 		result, err := system.CalcuatatePressesUntilRxReceivesLow()
 		if errors.Is(err, ErrNotEnoughButtonPresses) {
