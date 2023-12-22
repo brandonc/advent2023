@@ -24,7 +24,7 @@ type Brick struct {
 	// two cubes oriented vertically in the z dimension.
 	startX, startY, startZ int
 	endX, endY, endZ       int
-	name                   byte
+	ID                     int
 }
 
 type Game struct {
@@ -32,7 +32,7 @@ type Game struct {
 }
 
 func (b Brick) String() string {
-	return fmt.Sprintf("%c: %d,%d,%d~%d,%d,%d", b.name, b.startX, b.startY, b.startZ, b.endX, b.endY, b.endZ)
+	return fmt.Sprintf("%d: %d,%d,%d~%d,%d,%d", b.ID, b.startX, b.startY, b.startZ, b.endX, b.endY, b.endZ)
 }
 
 func (b Brick) Collides(other Brick) bool {
@@ -40,10 +40,14 @@ func (b Brick) Collides(other Brick) bool {
 	// and range startY..endY intersects with other.startY..other.endY
 	// while this brick is as least as far down as other.
 	zOverlap := b.startZ <= other.endZ
+	if !zOverlap {
+		return false
+	}
+
 	xOverlap := b.endX >= other.startX && b.startX <= other.endX
 	yOverlap := b.endY >= other.startY && b.startY <= other.endY
 
-	return zOverlap && xOverlap && yOverlap
+	return xOverlap && yOverlap
 }
 
 func (b *Brick) Move(dx, dy, dz int) {
@@ -55,29 +59,31 @@ func (b *Brick) Move(dx, dy, dz int) {
 	b.endZ += dz
 }
 
-func (g *Game) simulateBrick(index int, brick *Brick) int {
+func (g *Game) simulateBrick(index int) int {
 	// Move brick down until it rests on the ground or on another brick.
+	brick := &g.Bricks[index]
 	initialZ := brick.startZ
 next:
 	for {
 		if brick.startZ == 1 {
-			ui.Debugf("Brick %c comes to rest at height 1", brick.name)
+			ui.Debugf("Brick %d comes to rest at height 1", brick.ID)
 			break
 		}
 
 		brick.Move(0, 0, -1)
 
 		for or := 0; or < index; or++ {
+			// This is the slow part: checking every brick at each step down
 			if brick.Collides(g.Bricks[or]) {
-				// Too far
+				// Too far, so move back up one
 				brick.Move(0, 0, 1)
-				ui.Debugf("Brick %c comes to rest at height %d, on top of %c", brick.name, brick.startZ, g.Bricks[or].name)
+				ui.Debugf("Brick %d comes to rest at height %d, on top of %d", brick.ID, brick.startZ, g.Bricks[or].ID)
 				break next
 			}
 		}
 	}
 
-	ui.Debugf("Brick %c fell %d units", brick.name, initialZ-brick.startZ)
+	ui.Debugf("Brick %d fell %d units", brick.ID, initialZ-brick.startZ)
 	return initialZ - brick.startZ
 }
 
@@ -88,10 +94,7 @@ func (g *Game) Simulate() int {
 	fell := 0
 
 	for br := 0; br < len(g.Bricks); br++ {
-		brick := &g.Bricks[br]
-		ui.Debugf("Simulating brick %c, which is at %d", brick.name, brick.startZ)
-
-		if g.simulateBrick(br, brick) > 0 {
+		if g.simulateBrick(br) > 0 {
 			fell += 1
 		}
 	}
@@ -114,7 +117,7 @@ func parseBricks(reader io.Reader) *Game {
 	}
 
 	scanner := bufio.NewScanner(reader)
-	var nextChar byte = 'A'
+	nextID := 1
 	for scanner.Scan() {
 		line := scanner.Text()
 
@@ -124,10 +127,10 @@ func parseBricks(reader io.Reader) *Game {
 
 		game.Bricks = append(game.Bricks, Brick{
 			startX, startY, startZ, endX, endY, endZ,
-			nextChar,
+			nextID,
 		})
 
-		nextChar += 1
+		nextID += 1
 	}
 
 	slices.SortFunc[[]Brick](game.Bricks, func(a, b Brick) int {
