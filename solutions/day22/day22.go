@@ -27,9 +27,7 @@ type Brick struct {
 	ID                     int
 }
 
-type Game struct {
-	Bricks []Brick
-}
+type Game []Brick
 
 func (b Brick) String() string {
 	return fmt.Sprintf("%d: %d,%d,%d~%d,%d,%d", b.ID, b.startX, b.startY, b.startZ, b.endX, b.endY, b.endZ)
@@ -50,18 +48,14 @@ func (b Brick) Collides(other Brick) bool {
 	return xOverlap && yOverlap
 }
 
-func (b *Brick) Move(dx, dy, dz int) {
-	b.startX += dx
-	b.startY += dy
+func (b *Brick) MoveZ(dz int) {
 	b.startZ += dz
-	b.endX += dx
-	b.endY += dy
 	b.endZ += dz
 }
 
-func (g *Game) simulateBrick(index int) int {
+func (g Game) simulateBrick(index int) int {
 	// Move brick down until it rests on the ground or on another brick.
-	brick := &g.Bricks[index]
+	brick := &g[index]
 	initialZ := brick.startZ
 next:
 	for {
@@ -70,14 +64,15 @@ next:
 			break
 		}
 
-		brick.Move(0, 0, -1)
+		brick.MoveZ(-1)
 
 		for or := 0; or < index; or++ {
-			// This is the slow part: checking every brick at each step down
-			if brick.Collides(g.Bricks[or]) {
+			// This is the slow part: checking every lower brick at each step down.
+			// There must be a faster way to do this.
+			if brick.Collides(g[or]) {
 				// Too far, so move back up one
-				brick.Move(0, 0, 1)
-				ui.Debugf("Brick %d comes to rest at height %d, on top of %d", brick.ID, brick.startZ, g.Bricks[or].ID)
+				brick.MoveZ(1)
+				ui.Debugf("Brick %d comes to rest at height %d, on top of %d", brick.ID, brick.startZ, g[or].ID)
 				break next
 			}
 		}
@@ -87,13 +82,13 @@ next:
 	return initialZ - brick.startZ
 }
 
-func (g *Game) Simulate() int {
-	// Sort bricks by z-order. Sarting with the lowest brick, move it until
-	// it rests on the ground or on another brick in the x or y dimension.
-
+func (g Game) Simulate() int {
+	// Bricks are already sorted by z-order. Sarting with the lowest brick,
+	// move it until it rests on the ground or on another brick in
+	// the x or y dimension.
 	fell := 0
 
-	for br := 0; br < len(g.Bricks); br++ {
+	for br := 0; br < len(g); br++ {
 		if g.simulateBrick(br) > 0 {
 			fell += 1
 		}
@@ -111,10 +106,8 @@ func parseCoords(coords string) (int, int, int) {
 	return result[0], result[1], result[2]
 }
 
-func parseBricks(reader io.Reader) *Game {
-	game := Game{
-		Bricks: make([]Brick, 0),
-	}
+func parseBricks(reader io.Reader) Game {
+	game := make(Game, 0)
 
 	scanner := bufio.NewScanner(reader)
 	nextID := 1
@@ -125,7 +118,7 @@ func parseBricks(reader io.Reader) *Game {
 		startX, startY, startZ := parseCoords(coordsSet[0])
 		endX, endY, endZ := parseCoords(coordsSet[1])
 
-		game.Bricks = append(game.Bricks, Brick{
+		game = append(game, Brick{
 			startX, startY, startZ, endX, endY, endZ,
 			nextID,
 		})
@@ -133,7 +126,7 @@ func parseBricks(reader io.Reader) *Game {
 		nextID += 1
 	}
 
-	slices.SortFunc[[]Brick](game.Bricks, func(a, b Brick) int {
+	slices.SortFunc[[]Brick](game, func(a, b Brick) int {
 		if a.startZ == b.startZ {
 			return 0
 		}
@@ -143,15 +136,13 @@ func parseBricks(reader io.Reader) *Game {
 		return 1
 	})
 
-	return &game
+	return game
 }
 
-func (g *Game) SimulateWithoutBrick(b int) int {
-	gameWithoutBrick := Game{
-		Bricks: make([]Brick, len(g.Bricks)-1),
-	}
-	copy(gameWithoutBrick.Bricks, g.Bricks[:b])
-	copy(gameWithoutBrick.Bricks[b:], g.Bricks[b+1:])
+func (g Game) SimulateWithoutBrick(b int) int {
+	gameWithoutBrick := make(Game, len(g)-1)
+	copy(gameWithoutBrick, g[:b])
+	copy(gameWithoutBrick[b:], g[b+1:])
 
 	return gameWithoutBrick.Simulate()
 }
@@ -161,7 +152,7 @@ func (d day22) Part1(reader io.Reader) int {
 	game.Simulate()
 
 	safeToRemove := 0
-	for b := 0; b < len(game.Bricks); b++ {
+	for b := 0; b < len(game); b++ {
 		if game.SimulateWithoutBrick(b) == 0 {
 			safeToRemove += 1
 		}
@@ -174,7 +165,7 @@ func (d day22) Part2(reader io.Reader) int {
 	game.Simulate()
 
 	sum := 0
-	for b := 0; b < len(game.Bricks); b++ {
+	for b := 0; b < len(game); b++ {
 		sum += game.SimulateWithoutBrick(b)
 	}
 	return sum
