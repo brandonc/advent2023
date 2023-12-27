@@ -26,6 +26,7 @@ import (
 	"github.com/brandonc/advent2023/solutions/day22"
 	"github.com/brandonc/advent2023/solutions/day23"
 	"github.com/brandonc/advent2023/solutions/day24"
+	"github.com/brandonc/advent2023/solutions/day25"
 	"github.com/brandonc/advent2023/solutions/solution"
 )
 
@@ -54,4 +55,5 @@ var SolutionCommands = map[string]solution.SolutionFactory{
 	"22": day22.Factory,
 	"23": day23.Factory,
 	"24": day24.Factory,
+	"25": day25.Factory,
 }
